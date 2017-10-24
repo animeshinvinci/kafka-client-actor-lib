@@ -1,10 +1,11 @@
 package io.taps.kafka.actors
 
-import akka.actor.{Actor, ActorRef, Props,ActorLogging}
+import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import io.taps.kafka.KafkaSubscriber
 
 import scala.concurrent.duration.DurationInt
 
-class KafkaConsumerActor(consumer: Consumer, workers: ActorRef )extends Actor  with ActorLogging{
+class KafkaConsumerActor(consumer: KafkaSubscriber, workers: ActorRef )extends Actor  with ActorLogging{
 
   override def receive: Receive = ???
 }
@@ -12,7 +13,7 @@ class KafkaConsumerActor(consumer: Consumer, workers: ActorRef )extends Actor  w
 
 object KafkaConsumerActor {
 
-  def props(consumer: Consumer, workers: ActorRef): Props = Props(classOf[KafkaConsumerActor], consumer, workers)
+  def props(consumer: KafkaSubscriber, workers: ActorRef): Props = Props(classOf[KafkaConsumerActor], consumer, workers)
 
   case object Read
 

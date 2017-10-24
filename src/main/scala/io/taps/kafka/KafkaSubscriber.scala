@@ -8,9 +8,6 @@ import org.slf4j.LoggerFactory
 
 
 
-// have avro schema parser & converter utility
-// Data prodcing and consuming should be  generic record with help from avro schema file .asvc
-//
 
 
 class KafkaSubscriber {
@@ -18,15 +15,13 @@ class KafkaSubscriber {
 
 
   def subscribe: Unit ={
-    // Start an Actor with Kafka subscription
-    //
+
 
   }
 
 
   def subscribeTransactional: Unit ={
-    // Start  an actor for transactional mesaaging susbscription
-    // user should provide only topic name- partition name should be acquired by itself.
+
 
   }
 }
