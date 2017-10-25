@@ -21,10 +21,10 @@ class KafkaPublisher {
   val conf = ConfigFactory.load
 
   val producerProps = new Properties()
-  producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, broker)
+  producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, s"${conf.getString("kafka.broker")}")
   producerProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, classOf[KafkaAvroSerializer])
   producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, classOf[KafkaAvroSerializer])
-  producerProps.put("schema.registry.url", schemaRepo)
+  producerProps.put("schema.registry.url", conf.getString("kafka.schema-registry"))
 
   val producer = new KafkaProducer[Object, Object](producerProps)
 
