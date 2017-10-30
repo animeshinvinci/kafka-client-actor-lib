@@ -70,7 +70,7 @@ class KafkaPublisher {
         // We can't recover from these exceptions, so our only option is to close the producer and exit.
         producer.close()
       case e: KafkaException =>
-        
+
         producer.abortTransaction()
     }
 
