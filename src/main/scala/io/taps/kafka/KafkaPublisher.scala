@@ -3,11 +3,7 @@ package io.taps.kafka
 import java.util.{Properties, UUID}
 
 import com.typesafe.config.ConfigFactory
-import kafka.utils.VerifiableProperties
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord}
-import org.apache.avro.Schema
-import org.apache.avro.generic.{GenericData, GenericRecord}
-import kafka.consumer.{Consumer, ConsumerConfig}
 import io.confluent.kafka.serializers.{KafkaAvroDecoder, KafkaAvroSerializer}
 import org.apache.kafka.common.KafkaException
 import org.apache.kafka.common.errors.AuthorizationException
