@@ -67,7 +67,6 @@ class KafkaPublisher {
       producer.commitTransaction()
     } catch {
       case e@(_: ProducerFencedException | _: OutOfOrderSequenceException | _: AuthorizationException) =>
-        // We can't recover from these exceptions, so our only option is to close the producer and exit.
         producer.close()
       case e: KafkaException =>
 

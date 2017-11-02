@@ -1,40 +1,51 @@
 package io.taps.kafka.actors
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import io.taps.kafka.KafkaSubscriber
+import akka.event.Logging
+import io.taps.kafka.{KafkaPublisher, KafkaSubscriber}
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
 
 import scala.concurrent.duration.DurationInt
 
-class KafkaConsumerActor(consumer: KafkaSubscriber, workers: ActorRef )extends Actor  with ActorLogging{
+class KafkaConsumerActor(topic: String,group:String) extends Actor  with ActorLogging{
+  import context.dispatcher
 
-  override def receive: Receive = Actor.emptyBehavior
+  import KafkaConsumerActor._
+  val logger = Logging(context.system, this)
+
+  val  kafkaPublisher = new KafkaSubscriber(topic,group);
+  var consumer = kafkaPublisher.subscribe()
+
+
+  val waitingTime = 1 seconds
+
 
   override def preStart(): Unit = {
-    val consumerSettings = ConsumerSettings(as, new ByteArrayDeserializer, new StringDeserializer)
-      .withBootstrapServers("kafka:9092")
-      .withGroupId("group1")
-      .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
 
-    val done =
-      Consumer.committableSource(consumerSettings, Subscriptions.topics("order_commands"))
-        .mapAsync(1) { msg =>
-          decode[Message[OrderPayloadResponse]](msg.record.value) map { m => context.actorSelection(m.origin) ! m.payload
-          }
-          Future.successful(msg)
-        }
-        .mapAsync(1) { msg =>
-          msg.committableOffset.commitScaladsl()
-        }
-        .runWith(Sink.ignore)
+
   }
-}
 
+  def receive: Receive = {
+    case Poll =>
+      val records = consumer.poll()
+      res
+      if (records.isEmpty) {
+        context.system.scheduler.scheduleOnce(waitingTime, self, Poll)
+      } else {
+        self ! Poll
+      }
+  }
+
+
+
+  }
 
 object KafkaConsumerActor {
 
-  def props(consumer: KafkaSubscriber, workers: ActorRef): Props = Props(classOf[KafkaConsumerActor], consumer, workers)
+  def props(topic: String,group:String): Props = Props(classOf[KafkaConsumerActor], topic, group)
 
-  case object Read
+  case object Poll
 
 }
+
+
