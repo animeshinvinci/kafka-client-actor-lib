@@ -1,19 +1,20 @@
 package io.taps.kafka.actors
 
-import akka.actor.{Actor, ActorLogging, ActorRef, Props}
+import akka.actor.{Actor, ActorLogging, Props}
 import akka.event.Logging
-import io.taps.kafka.{KafkaPublisher, KafkaSubscriber, Message}
+import io.taps.kafka.{KafkaSubscriber, Message}
 
 import scala.concurrent.duration.DurationInt
 
-class KafkaConsumerActor(topic: String,group:String) extends Actor  with ActorLogging{
+
+class KafkaTxnlConsumerActor (topic: String,group:String) extends Actor  with ActorLogging{
   import context.dispatcher
 
   import KafkaConsumerActor._
   val logger = Logging(context.system, this)
 
   val  subscriber = new KafkaSubscriber(topic,group);
-  var consumer = subscriber.subscribe()
+  var consumer = subscriber.subscribeTransactional()
 
 
   val waitingTime = 1 seconds
@@ -42,14 +43,12 @@ class KafkaConsumerActor(topic: String,group:String) extends Actor  with ActorLo
 
 
 
-  }
+}
 
-object KafkaConsumerActor {
+object KafkaTxnlConsumerActor {
 
-  def props(topic: String,group:String): Props = Props(classOf[KafkaConsumerActor], topic, group)
+  def props(topic: String,group:String): Props = Props(classOf[KafkaTxnlConsumerActor], topic, group)
 
   case object Poll
 
 }
-
-

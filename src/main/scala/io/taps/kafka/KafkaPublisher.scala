@@ -14,17 +14,14 @@ import org.apache.kafka.common.errors.ProducerFencedException
 class KafkaPublisher {
 
 
-  val broker = "localhost:9092"
-  val zookeeper = "localhost:2181"
-  val schemaRepo = "http://localhost:8081"
 
   val conf = ConfigFactory.load
 
   val producerProps = new Properties()
-  producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, s"${conf.getString("kafka.broker")}")
+  producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, s"${conf.getString("kafka.bootstrap-servers")}")
   producerProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, classOf[KafkaAvroSerializer])
   producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, classOf[KafkaAvroSerializer])
-  producerProps.put("schema.registry.url", conf.getString("kafka.schema-registry"))
+  producerProps.put("schema.registry.url", conf.getString("kafka.schema-registry-url"))
 
 
 
@@ -33,12 +30,12 @@ class KafkaPublisher {
 
 
   val  producerTxnProps = new Properties()
-  producerTxnProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, s"${conf.getString("kafka.broker")}")
+  producerTxnProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, s"${conf.getString("kafka.bootstrap-servers")}")
   producerTxnProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, classOf[KafkaAvroSerializer])
   producerTxnProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, classOf[KafkaAvroSerializer])
-  producerTxnProps.put("schema.registry.url", conf.getString("kafka.schema-registry"))
-  producerTxnProps.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, UUID.randomUUID().toString) // this has to be set!!! (unique for each producer you're having)
-  producerTxnProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true") // has to be idempotent
+  producerTxnProps.put("schema.registry.url", conf.getString("kafka.schema-registry-url"))
+  producerTxnProps.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, UUID.randomUUID().toString)
+  producerTxnProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true")
 
 
   val txnproducer = new KafkaProducer[Object, Object](producerTxnProps)

@@ -1,6 +1,6 @@
 package io.taps.kafka.actors
 
-import akka.actor.{Actor, ActorLogging}
+import akka.actor.{Actor, ActorLogging, Props}
 import akka.event.Logging
 import io.taps.kafka.KafkaPublisher
 
@@ -31,4 +31,8 @@ class KafkaProducerActor extends Actor with ActorLogging{
   }
 
 
+}
+
+object KafkaProducerActor {
+  def props(): Props = { Props(new KafkaProducerActor)}
 }
